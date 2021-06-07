@@ -1,0 +1,52 @@
+﻿akka {
+	actor {
+		provider = "Akka.Cluster.ClusterActorRefProvider, Akka.Cluster"
+ 
+		serializers {
+			hyperion = "Akka.Serialization.HyperionSerializer, Akka.Serialization.Hyperion"
+		}
+ 
+		serialization-bindings {
+			"System.Object" = hyperion
+		}
+ 
+		deployment {
+
+			/prices {
+				router = round-robin-pool
+				nr-of-instances = 100
+				cluster {
+					enabled = on
+					max-nr-of-instances-per-node = 5
+					allow-local-routees = off
+					use-role = pricesRole
+				}
+			}
+		
+		
+			/api/calculation {
+				router = round-robin-pool
+				nr-of-instances = 100
+				cluster {
+					enabled = on
+					max-nr-of-instances-per-node = 5
+					allow-local-routees = off
+					use-role = pricesRole
+				}
+			}
+		}
+	}
+			
+	remote {
+		dot-netty.tcp {
+			transport-class = "Akka.Remote.Transport.DotNetty.TcpTransport, Akka.Remote"
+			hostname = "127.0.0.1"
+			port = 4050
+		}
+	}            
+
+	cluster {
+		seed-nodes = ["akka.tcp://CurrencyApi@127.0.0.1:4053"]
+		roles = [api]
+	}
+}

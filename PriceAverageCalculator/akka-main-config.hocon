@@ -1,0 +1,22 @@
+﻿akka {
+	# here we are configuring log levels
+	log-config-on-start = off
+	# stdout-loglevel = INFO
+	loglevel = INFO
+	# this config section will be referenced as akka.actor
+
+	actor {
+		deployment {
+
+			/prices {
+				router = round-robin-pool
+				nr-of-instances = 2
+			}
+	
+			/api/calculation {
+				router = round-robin-pool
+				nr-of-instances = 2
+			}
+		}
+	}
+}
